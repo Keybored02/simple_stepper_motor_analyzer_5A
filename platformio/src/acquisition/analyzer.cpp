@@ -90,6 +90,8 @@ struct IsrData {
   StepsCaptureBuffer steps_capture_buffer;
   // For capturing only the N's steps reading.
   uint16_t steps_capture_divider_counter = 0;
+  // For RMS
+  AdcCaptureBufferforRMS adc_capture_buffer_rms;
 };
 
 static IsrData isr_data;
@@ -329,7 +331,23 @@ void isr_handle_one_sample(const uint16_t raw_v1, const uint16_t raw_v2) {
   //   (uint16_t)display1_filter.update(raw_v1) - isr_data.settings.offset1;
   isr_data.state.v2 = v2;
   // (uint16_t)display2_filter.update(raw_v2) - isr_data.settings.offset2;
+  
+  // for RMS
+  // store always
+  if(!isr_data.adc_capture_buffer_rms.write_stop_flag){
+    AdcCaptureItem* adc_capture_item_for_rms =
+          isr_data.adc_capture_buffer_rms.items.insert();
+    adc_capture_item_for_rms->v1 = v1;
+    adc_capture_item_for_rms->v2 = v2;
+    if(isr_data.adc_capture_buffer_rms.counter < kAdcRMSCaptureBufferSize){
+      isr_data.adc_capture_buffer_rms.counter++;
+      isr_data.adc_capture_buffer_rms.read_accept_flag = false;
+    }else{
+      isr_data.adc_capture_buffer_rms.read_accept_flag = true;
+    }
+  }
 
+  
   // Handle signal capturing.
   // Release: 220ns, Debug: 1100ns.  (TODO: update timing for current code)
   if (isr_data.adc_capture_state != ADC_CAPTURE_IDLE &&
@@ -566,6 +584,38 @@ double state_steps(const State& state) {
                             : state.full_steps + fraction;
 
   return result;
+}
+
+AdcCaptureItem rms_val={0,0};
+
+void calc_true_rms(){
+  if(!isr_data.adc_capture_buffer_rms.read_accept_flag)
+    return;
+  
+  isr_data.adc_capture_buffer_rms.write_stop_flag = true;
+  
+    double sum_amps1=0;
+    double sum_amps2=0;
+
+    for (int i = 0; i < analyzer::kAdcRMSCaptureBufferSize; i++) {
+        const analyzer::AdcCaptureItem* item =
+            isr_data.adc_capture_buffer_rms.items.get(i);
+
+        // calc squared currents 
+        sum_amps1 += pow(item->v1,2);
+        sum_amps2 += pow(item->v2,2);
+    }
+
+    rms_val.v1 = (uint16_t)sqrtf(sum_amps1/analyzer::kAdcRMSCaptureBufferSize);
+    rms_val.v2 = (uint16_t)sqrtf(sum_amps2/analyzer::kAdcRMSCaptureBufferSize);
+  
+  isr_data.adc_capture_buffer_rms.counter=0;
+  isr_data.adc_capture_buffer_rms.write_stop_flag = false;
+
+}
+
+AdcCaptureItem* get_rms_val(){
+  return &rms_val;
 }
 
 }  // namespace analyzer

@@ -230,4 +230,28 @@ void get_settings(Settings* settings);
 // @@@ Temp
 void dump_dma_state();
 
+
+// Variables for calculating rms datas from stored adc
+// This one is always storing adc values
+constexpr uint32_t kAdcRMSCaptureBufferSize = kAdcCaptureBufferSize;
+typedef CircularBuffer<AdcCaptureItem, kAdcRMSCaptureBufferSize> AdcCaptureItemsforRMS;
+struct AdcCaptureBufferforRMS {
+  public:
+    AdcCaptureBufferforRMS():
+      counter(0),
+      read_accept_flag(true),
+      write_stop_flag(false)
+      {
+
+      }
+  
+  AdcCaptureItemsforRMS items;
+  uint16_t counter;
+  bool read_accept_flag;
+  bool write_stop_flag;
+};
+
+void calc_true_rms();
+AdcCaptureItem* get_rms_val();
+
 }  // namespace analyzer
