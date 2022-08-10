@@ -9,7 +9,7 @@ constexpr uint8_t SENSORS_PIN = 14;
 
 // We use arbitrary values to make sure things do
 // not break.
-static const SensorSpec UNKNOWN_SENSOR("????", 2500, 0.4);
+static const SensorSpec UNKNOWN_SENSOR("CC6920BSO-05A", 5000, 0.264);
 
 // ACS70331EOLCTR-2P5B3
 static const SensorSpec GMR_2P5_SENSOR("G2P5A", 2500, 0.4);
@@ -54,7 +54,7 @@ static const SensorSpec* determine_sensor() {
   const PinState pin_state = determine_config_pin_state(SENSORS_PIN);
   switch (pin_state) {
     case STATE_FLOAT:
-      return &GMR_2P5_SENSOR;
+      return &UNKNOWN_SENSOR;
     case STATE_DOWN:
       // Reserved for a future sernsor.
       return &UNKNOWN_SENSOR;

@@ -18,11 +18,11 @@ static const ui::ChartAxisConfig kYAxisConfig_2500ma = {
     .num_ticks = 6,
     .dividers = 4};
 
-static const ui::ChartAxisConfig kYAxisConfig_3000ma = {
-    .range = {.min = 0, .max = 3000},
-    .labels = "3A\n2\n1\n0",
-    .num_ticks = 4,
-    .dividers = 5};
+static const ui::ChartAxisConfig kYAxisConfig_5000ma = {
+    .range = {.min = 0, .max = 5000},
+    .labels = "5A\n4\n3\n2\n1\n0",
+    .num_ticks = 6,
+    .dividers = 4};
 
 CurrentHistogramScreen::CurrentHistogramScreen(){};
 
@@ -33,7 +33,7 @@ void CurrentHistogramScreen::setup(uint8_t screen_num) {
   const uint16_t sensor_max_milliamps =
       hardware_config::sensor_spec()->range_milliamps;
   const ui::ChartAxisConfig* y_axis_config = (sensor_max_milliamps > 2500)
-                                                 ? &kYAxisConfig_3000ma
+                                                 ? &kYAxisConfig_5000ma
                                                  : &kYAxisConfig_2500ma;
   ui::create_histogram(screen_, analyzer::kNumHistogramBuckets,
                        kXAxisConfig_2500ma, *y_axis_config, &histogram_);
