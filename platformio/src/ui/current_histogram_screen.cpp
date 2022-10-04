@@ -37,6 +37,7 @@ void CurrentHistogramScreen::setup(uint8_t screen_num) {
                                                  : &kYAxisConfig_2500ma;
   ui::create_histogram(screen_, analyzer::kNumHistogramBuckets,
                        kXAxisConfig_2500ma, *y_axis_config, &histogram_);
+  ui::create_label(screen_, 300,60, 290, "", ui::kFontDataFields, LV_LABEL_ALIGN_LEFT, LV_COLOR_SILVER, &average_current_label_);
 };
 
 void CurrentHistogramScreen::on_load() {
@@ -58,6 +59,8 @@ void CurrentHistogramScreen::on_event(ui_events::UiEventId ui_event_id) {
 
 void CurrentHistogramScreen::loop() {
   // We update at a fixed rate.
+  uint32_t avg_total = 0, peak = 0;
+  uint8_t qty = 0;
   if (display_update_elapsed_.elapsed_millis() < kUpdateIntervalMillis) {
     return;
   }
@@ -78,7 +81,18 @@ void CurrentHistogramScreen::loop() {
             : 0;
 
     histogram_.lv_series->points[i] = avg_peak_milliamps;
+    if( steps > 0 ) {
+      avg_total += avg_peak_milliamps;
+      peak = avg_peak_milliamps > peak ? avg_peak_milliamps : peak;
+      qty++;
+    }
   }
-
   lv_chart_refresh(histogram_.lv_chart);
+    //average_current_label_.set_text_float(qty == 0 ? 0 : avg_total / qty, 0);
+  if( qty > 0){   
+    lv_label_set_text_fmt(average_current_label_.lv_label, "Avg:%4.2d  Peak:%4.2d", avg_total / qty, peak );
+  }
+  else{
+    average_current_label_.set_text("Waiting...");
+  }
 }
