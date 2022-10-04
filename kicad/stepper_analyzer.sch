@@ -41,7 +41,7 @@ U 1 1 609CDEF6
 P 1300 1550
 F 0 "J1" H 1400 1750 50  0000 C CNN
 F 1 "Connector_Conn_01x04_Male" H 1408 1740 50  0001 C CNN
-F 2 "stepper_motor_analyzer:connector_4pins_horizontal" H 1300 1550 50  0001 C CNN
+F 2 "Connector:Connector_green_big" H 1300 1550 50  0001 C CNN
 F 3 "" H 1300 1550 50  0001 C CNN
 	1    1300 1550
 	1    0    0    1   
@@ -229,7 +229,7 @@ U 1 1 60A3C8AB
 P 1300 2850
 F 0 "J2" H 1400 3050 50  0000 C CNN
 F 1 "Connector_Conn_01x04_Male" H 1400 3250 50  0001 C CNN
-F 2 "stepper_motor_analyzer:connector_4pins_horizontal" H 1300 2850 50  0001 C CNN
+F 2 "Connector:Connector_green_big" H 1300 2850 50  0001 C CNN
 F 3 "" H 1300 2850 50  0001 C CNN
 	1    1300 2850
 	1    0    0    1   
@@ -514,7 +514,7 @@ L stepper_motor_analyzer:ACS70331_soic8 U2
 U 1 1 60AEB4AA
 P 3900 1600
 F 0 "U2" H 3250 2200 50  0000 C CNN
-F 1 "ACS70331EOLCTR-2P5B3" H 3250 2050 50  0000 C CNN
+F 1 "CC6920BSO-5A" H 3250 2050 50  0000 C CNN
 F 2 "stepper_motor_analyzer:SOIC-8_3.9x4.9mm_P1.27mm" H 4300 1550 50  0001 L CIN
 F 3 "" H 3900 1600 50  0001 C CNN
 	1    3900 1600
@@ -561,7 +561,7 @@ L stepper_motor_analyzer:ACS70331_soic8 U1
 U 1 1 60B5D76B
 P 2950 2700
 F 0 "U1" H 2150 2050 50  0000 C CNN
-F 1 "ACS70331EOLCTR-2P5B3" H 2200 2200 50  0000 C CNN
+F 1 "CC6920BSO-5A" H 2200 2200 50  0000 C CNN
 F 2 "stepper_motor_analyzer:SOIC-8_3.9x4.9mm_P1.27mm" H 3350 2650 50  0001 L CIN
 F 3 "" H 2950 2700 50  0001 C CNN
 	1    2950 2700
@@ -660,7 +660,7 @@ F 3 "~" H 10150 7100 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Text Notes 6400 7150 0    100  ~ 0
-Simple Stepper Motor Analyzer MK2
+Simple Stepper Motor Analyzer ver 5A
 Text Notes 7550 4850 2    50   ~ 0
 BACKLIGHT\nCONTROL
 Text Notes 8200 6400 0    50   ~ 0

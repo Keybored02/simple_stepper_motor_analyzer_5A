@@ -23,4 +23,7 @@ static constexpr bool kEnableDebugEvents = false;
 // For UI debugging. Shows the boundaries of UI objects.
 static constexpr bool kDebugBackgrounds = false;
 
+// For showing RMS UI and calc function
+static constexpr bool kEnableRMSFunction = true;
+
 }  // namespace config

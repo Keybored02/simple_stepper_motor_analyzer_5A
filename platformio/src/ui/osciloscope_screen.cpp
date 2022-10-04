@@ -21,6 +21,13 @@ static const ui::ChartAxisConfig kYAxisConfig_3000ma{
     .dividers = 5,
     .minor_div_lines_mask = 0x0000};
 
+static const ui::ChartAxisConfig kYAxisConfig_5000ma{
+    .range = {.min = -5000, .max = 5000},
+    .labels = "5A\n4\n3\n2\n1\n0\n-1\n-2\n-3\n-4\n-5A",
+    .num_ticks = 11,
+    .dividers = 9,
+    .minor_div_lines_mask = 0x0000};
+
 static const ui::ChartAxisConfig kXAxisConfig_20ms{
     .range = {.min = 0, .max = 20},  // ignored
     .labels = "0\n5ms\n10ms\n15ms\n20ms",
@@ -39,7 +46,7 @@ void OsciloscopeScreen::setup(uint8_t screen_num) {
   ui::create_screen(&screen_);
   ui::create_page_elements(screen_, "CURRENT PATTERNS", screen_num, nullptr);
   y_axis_config_ = hardware_config::sensor_spec()->range_milliamps > 2500
-                       ? kYAxisConfig_3000ma
+                       ? kYAxisConfig_5000ma
                        : kYAxisConfig_2500ma;
   ui::create_chart(screen_, analyzer::kAdcCaptureBufferSize, 2,
                    kXAxisConfig_20ms, y_axis_config_, ui_events::UI_EVENT_SCALE,

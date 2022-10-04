@@ -4,6 +4,7 @@
 #include "misc/config_eeprom.h"
 #include "ui.h"
 #include "misc/hardware_config.h"
+#include "config.h"
 
 static constexpr uint32_t kUpdateIntervalMillis = 500;
 
@@ -21,8 +22,16 @@ void HomeScreen::setup(uint8_t screen_num) {
   const lv_coord_t w2 = 130;
   const lv_coord_t x1 = 40;
   const lv_coord_t x2 = 150;
+  const lv_coord_t x3 = 260;
   const lv_coord_t dy = 36;
   lv_coord_t y = 47;
+
+  if(config::kEnableRMSFunction){
+    ui::create_label(screen_, w1, x2, y-dy, "Current", ui::kFontDataFields,
+                     LV_LABEL_ALIGN_RIGHT, LV_COLOR_ORANGE, nullptr);
+    ui::create_label(screen_, w1, x3, y-dy, "RMS", ui::kFontDataFields,
+                     LV_LABEL_ALIGN_RIGHT, LV_COLOR_BLUE, nullptr);
+  }
 
   // NOTE: adding 1 to the y of the numeric fields to better align
   // with the font of the text fields.
@@ -31,12 +40,21 @@ void HomeScreen::setup(uint8_t screen_num) {
 
   ui::create_label(screen_, w2, x2, y + 1, "", ui::kFontNumericDataFields,
                    LV_LABEL_ALIGN_RIGHT, LV_COLOR_SILVER, &ch_a_field_);
+  if(config::kEnableRMSFunction){
+    ui::create_label(screen_, w2, x3, y + 1, "", ui::kFontNumericDataFields,
+                    LV_LABEL_ALIGN_RIGHT, LV_COLOR_SILVER, &ch_a_rms_field_);
+  }
   y += dy;
 
   ui::create_label(screen_, w1, x1, y + 1, "COIL  B", ui::kFontDataFields,
                    LV_LABEL_ALIGN_LEFT, LV_COLOR_SILVER, nullptr);
   ui::create_label(screen_, w2, x2, y, "", ui::kFontNumericDataFields,
                    LV_LABEL_ALIGN_RIGHT, LV_COLOR_SILVER, &ch_b_field_);
+  if(config::kEnableRMSFunction){
+    ui::create_label(screen_, w2, x3, y, "", ui::kFontNumericDataFields,
+                    LV_LABEL_ALIGN_RIGHT, LV_COLOR_SILVER, &ch_b_rms_field_);
+  }
+  
   y += dy;
 
   ui::create_label(screen_, w1, x1, y, "ERRORS", ui::kFontDataFields,
@@ -84,6 +102,12 @@ void HomeScreen::loop() {
   const hardware_config::SensorSpec* sensor_spec = hardware_config::sensor_spec();
   ch_a_field_.set_text_float(sensor_spec->adc_value_to_amps(state->v1), 2);
   ch_b_field_.set_text_float(sensor_spec->adc_value_to_amps(state->v2), 2);
+
+  if(config::kEnableRMSFunction){
+    analyzer::calc_true_rms();
+    ch_a_rms_field_.set_text_float(sensor_spec->adc_value_to_amps(analyzer::get_rms_val()->v1),2);
+    ch_b_rms_field_.set_text_float(sensor_spec->adc_value_to_amps(analyzer::get_rms_val()->v2),2);
+  }
 
   errors_field_.set_text_uint(state->quadrature_errors);
   errors_field_.set_text_color(state->quadrature_errors ? LV_COLOR_RED

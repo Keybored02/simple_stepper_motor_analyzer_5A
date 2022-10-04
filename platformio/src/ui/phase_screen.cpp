@@ -23,6 +23,13 @@ static const ui::ChartAxisConfig kXAxisConfig_3000ma{
     .dividers = 11,
     .minor_div_lines_mask = 0x0aaa};
 
+static const ui::ChartAxisConfig kXAxisConfig_5000ma{
+    .range = {.min = -5000, .max = 5000},  // ignored ?
+    .labels = "5A\n4\n3\n2\n1\n0\n-1\n-2\n-3\n-4\n-5A",
+    .num_ticks = 11,
+    .dividers = 9,
+    .minor_div_lines_mask = 0x0aaa};
+
 static const ui::ChartAxisConfig kYAxisConfig_2500ma{
     .range = {.min = -2500, .max = 2500},  // ignored ?
     .labels = "2.5A\n0\n-2.5A",
@@ -37,15 +44,25 @@ static const ui::ChartAxisConfig kYAxisConfig_3000ma{
     .dividers = 11,
     .minor_div_lines_mask = 0x0aaa};
 
+static const ui::ChartAxisConfig kYAxisConfig_5000ma{
+    .range = {.min = -5000, .max = 5000},  // ignored ?
+    .labels = "5A\n4\n3\n2\n1\n0\n-1\n-2\n-3\n-4\n-5A",
+    .num_ticks = 11,
+    .dividers = 9,
+    .minor_div_lines_mask = 0x0aaa};
+
 void PhaseScreen::setup(uint8_t screen_num) {
   ui::create_screen(&screen_);
   ui::create_page_elements(screen_, "PHASE PATTERNS", screen_num, nullptr);
   // Select axis configs based on current sensor used.
   const ui::ChartAxisConfig* x_axis_config = &kXAxisConfig_2500ma;
   const ui::ChartAxisConfig* y_axis_config = &kYAxisConfig_2500ma;
-  if (hardware_config::sensor_spec()->range_milliamps > 2500) {
+  if ((hardware_config::sensor_spec()->range_milliamps > 2500) && (hardware_config::sensor_spec()->range_milliamps <= 3000)) {
     x_axis_config = &kXAxisConfig_3000ma;
     y_axis_config = &kYAxisConfig_3000ma;
+  }else if (hardware_config::sensor_spec()->range_milliamps > 3000) {
+    x_axis_config = &kXAxisConfig_5000ma;
+    y_axis_config = &kYAxisConfig_5000ma;
   }
   xy_max_milliamps_ = x_axis_config->range.max;
   ui::create_polar_chart(screen_, *x_axis_config, *y_axis_config,

@@ -16,6 +16,8 @@ class HomeScreen : public screen_manager::Screen {
   Elapsed display_update_elapsed_;
   ui::Label ch_a_field_;
   ui::Label ch_b_field_;
+  ui::Label ch_a_rms_field_;
+  ui::Label ch_b_rms_field_;
   ui::Label errors_field_;
   ui::Label power_field_;
   ui::Label idles_field_;
