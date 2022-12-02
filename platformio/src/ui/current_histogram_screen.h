@@ -15,4 +15,5 @@ class CurrentHistogramScreen : public screen_manager::Screen {
  private:
   Elapsed display_update_elapsed_;
   ui::Histogram histogram_;
+  ui::Label average_current_label_;
 };
